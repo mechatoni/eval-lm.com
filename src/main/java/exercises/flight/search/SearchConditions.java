@@ -10,8 +10,9 @@ public class SearchConditions {
     public String destination;
 
     public SearchConditions(String origin, String destination) {
-        if (origin == null || destination == null)
+        if (origin == null || destination == null) {
             throw new IllegalArgumentException("Neither origin nor destination can be null");
+        }
         this.origin = origin;
         this.destination = destination;
     }

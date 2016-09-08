@@ -1,10 +1,14 @@
 package exercises.flight.search.impl;
-import exercises.flight.search.*;
 
-public class SearchConditionsImpl implements SearchConditions {
+public class SearchConditionsImpl {
 
-    public SearchConditionsImpl(String string, String string2) {
-        // TODO Auto-generated constructor stub
+    String origin;
+    String destination;
+
+    public SearchConditionsImpl(String origin, String destination) {
+        if (origin == null || destination == null)
+            throw new IllegalArgumentException("Neither origin nor destination can be null");
+        this.origin = origin;
+        this.destination = destination;
     }
-
 }

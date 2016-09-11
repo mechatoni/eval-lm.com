@@ -29,4 +29,8 @@ public class FlightTicketTest {
         assertThat(new FlightTicket("AnyName", "0").toString(), is(equalTo("AnyName:0.00")));
     }
 
+    @Test
+    public void testEquals() {
+        assertTrue(new FlightTicket("AnyName", "1.000").equals(new FlightTicket("AnyName", BigDecimal.ONE)));
+    }
 }

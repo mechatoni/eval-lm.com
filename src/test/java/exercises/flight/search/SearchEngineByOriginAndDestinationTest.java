@@ -20,7 +20,7 @@ public class SearchEngineByOriginAndDestinationTest {
     @Test
     public void testNonexistentInputFile() {
 
-        SearchEngine engine = new SearchEngineByOriginAndDestinationInCSVStream(getEmptyReader());
+        SearchEngine engine = new SearchEngineByOriginAndDestinationInCSVStream(getFakeReader());
         
         List<FlightTicket> matchingFlightTickets = engine.getFlightTickets(new SearchConditions("", ""));
         assertThat(matchingFlightTickets.isEmpty(), is(true));
@@ -101,7 +101,7 @@ public class SearchEngineByOriginAndDestinationTest {
         }
     }
 
-    private Reader getEmptyReader() {
+    private Reader getFakeReader() {
 
         try {
             return CSVReaderUtil.getFileReader(SAMPLES_CSV_FILEPATH, SAMPLES_CSV_FILENAME_OFFAKE);

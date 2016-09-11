@@ -6,8 +6,9 @@ import org.junit.runners.Suite.*;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        PricingEngineByDaysToDepartureAndNumPersonsTest.class,
+        FlightTicketTest.class,
         SearchConditionsTest.class,
+        PricingEngineByDaysToDepartureAndNumPersonsTest.class,
         SearchEngineByOriginAndDestinationTest.class
 })
 public class AllTests {

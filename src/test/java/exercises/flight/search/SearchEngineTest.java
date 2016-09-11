@@ -68,7 +68,7 @@ public class SearchEngineTest {
         List<FlightTicket> matchingFlightTickets = engine.getFlightTickets(new SearchConditions("CDG", "MAD"));
         assertThat("getFlightTickets must return a non empty list", matchingFlightTickets.isEmpty(), is(false));
         assertThat("getFlightTickets must return a list with only one ticket", matchingFlightTickets.size(), is(1));
-        assertThat("getFlightTickets must return a ticket like 'IB8482,295'", matchingFlightTickets, hasItem(new FlightTicketImpl("IB8482", "295")));
+        assertThat("getFlightTickets must return a ticket like 'IB8482,295'", matchingFlightTickets, hasItem(new FlightTicket("IB8482", "295")));
     }
 
     @Test
@@ -78,8 +78,8 @@ public class SearchEngineTest {
         List<FlightTicket> matchingFlightTickets = engine.getFlightTickets(new SearchConditions("CPH", "FCO"));
         assertThat("getFlightTickets must return a non empty list", matchingFlightTickets.isEmpty(), is(false));
         assertThat("getFlightTickets must return a list with two tickets", matchingFlightTickets.size(), is(2));
-        assertThat("getFlightTickets must return a ticket like 'TK4667,137'", matchingFlightTickets, hasItem(new FlightTicketImpl("TK4667", "137")));
-        assertThat("getFlightTickets must return a ticket like 'U24631,268'", matchingFlightTickets, hasItem(new FlightTicketImpl("U24631", "268")));
+        assertThat("getFlightTickets must return a ticket like 'TK4667,137'", matchingFlightTickets, hasItem(new FlightTicket("TK4667", "137")));
+        assertThat("getFlightTickets must return a ticket like 'U24631,268'", matchingFlightTickets, hasItem(new FlightTicket("U24631", "268")));
     }
 
     private Reader getValidReader() {

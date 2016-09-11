@@ -38,11 +38,11 @@ public class RuledPricingEngine implements PricingEngine {
     @Override
     public FlightTicket calculateTotal(FlightTicket base, PricingModifiers pricingModifiers) {
 
-        BigDecimal unitPrice = calculatePriceFromDaysRules(pricingModifiers, base.getPrice());
+        BigDecimal unitPrice = calculatePriceFromDaysRules(pricingModifiers, base.price);
         BigDecimal adultsPrice = calculateAdultsPrice(pricingModifiers, unitPrice);
         BigDecimal childrenPrice = calculateChildrenPrice(pricingModifiers, unitPrice);
         BigDecimal infantsPrice = calculateInfantsPrice(base, pricingModifiers);
-        return new FlightTicketImpl(base.getFlightName(), adultsPrice.add(childrenPrice).add(infantsPrice));
+        return new FlightTicket(base.flightName, adultsPrice.add(childrenPrice).add(infantsPrice));
     }
 
     private BigDecimal calculatePriceFromDaysRules(PricingModifiers pricingModifiers, BigDecimal price) {
@@ -66,7 +66,7 @@ public class RuledPricingEngine implements PricingEngine {
     }
 
     private BigDecimal calculateInfantsPrice(FlightTicket base, PricingModifiers pricingModifiers) {
-        return getInfantPrice(base.getFlightName()).multiply(new BigDecimal(pricingModifiers.numInfants));
+        return getInfantPrice(base.flightName).multiply(new BigDecimal(pricingModifiers.numInfants));
     }
 
     private BigDecimal getInfantPrice(String flightName) {

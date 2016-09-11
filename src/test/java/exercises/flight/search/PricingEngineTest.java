@@ -28,9 +28,9 @@ public class PricingEngineTest {
         List<FlightTicket> testTotalsTickets = pricing.calculateTotals(getBaseFlightTickets("AMS", "FRA"), pricingModifiers);
         assertThat("getFlightTickets must return a non empty list", testTotalsTickets.isEmpty(), is(false));
         assertThat("getFlightTickets must return a list with three tickets", testTotalsTickets.size(), is(3));
-        assertThat("getFlightTickets must return a ticket like 'TK2372,157.60'", testTotalsTickets, hasItem(new FlightTicketImpl("TK2372", "157.60")));
-        assertThat("getFlightTickets must return a ticket like 'TK2659,198.40'", testTotalsTickets, hasItem(new FlightTicketImpl("TK2659", "198.40")));
-        assertThat("getFlightTickets must return a ticket like 'LH5909,90.40'", testTotalsTickets, hasItem(new FlightTicketImpl("LH5909", "90.40")));
+        assertThat("getFlightTickets must return a ticket like 'TK2372,157.60'", testTotalsTickets, hasItem(new FlightTicket("TK2372", "157.60")));
+        assertThat("getFlightTickets must return a ticket like 'TK2659,198.40'", testTotalsTickets, hasItem(new FlightTicket("TK2659", "198.40")));
+        assertThat("getFlightTickets must return a ticket like 'LH5909,90.40'", testTotalsTickets, hasItem(new FlightTicket("LH5909", "90.40")));
     }
 
     @Test
@@ -49,8 +49,8 @@ public class PricingEngineTest {
         List<FlightTicket> testTotalsTickets = pricing.calculateTotals(getBaseFlightTickets("LHR", "IST"), pricingModifiers);
         assertThat("getFlightTickets must return a non empty list", testTotalsTickets.isEmpty(), is(false));
         assertThat("getFlightTickets must return a list with three tickets", testTotalsTickets.size(), is(2));
-        assertThat("getFlightTickets must return a ticket like 'TK8891,806.00'", testTotalsTickets, hasItem(new FlightTicketImpl("TK8891", "806.00")));
-        assertThat("getFlightTickets must return a ticket like 'LH1085,481.19'", testTotalsTickets, hasItem(new FlightTicketImpl("LH1085", "481.19")));
+        assertThat("getFlightTickets must return a ticket like 'TK8891,806.00'", testTotalsTickets, hasItem(new FlightTicket("TK8891", "806.00")));
+        assertThat("getFlightTickets must return a ticket like 'LH1085,481.19'", testTotalsTickets, hasItem(new FlightTicket("LH1085", "481.19")));
     }
 
     @Test
@@ -68,8 +68,8 @@ public class PricingEngineTest {
         List<FlightTicket> testTotalsTickets = pricing.calculateTotals(getBaseFlightTickets("BCN", "MAD"), pricingModifiers);
         assertThat("getFlightTickets must return a non empty list", testTotalsTickets.isEmpty(), is(false));
         assertThat("getFlightTickets must return a list with three tickets", testTotalsTickets.size(), is(2));
-        assertThat("getFlightTickets must return a ticket like 'IB2171,909.09'", testTotalsTickets, hasItem(new FlightTicketImpl("IB2171", "909.09")));
-        assertThat("getFlightTickets must return a ticket like 'LH5496,1028.43'", testTotalsTickets, hasItem(new FlightTicketImpl("LH5496", "1028.43")));
+        assertThat("getFlightTickets must return a ticket like 'IB2171,909.09'", testTotalsTickets, hasItem(new FlightTicket("IB2171", "909.09")));
+        assertThat("getFlightTickets must return a ticket like 'LH5496,1028.43'", testTotalsTickets, hasItem(new FlightTicket("LH5496", "1028.43")));
     }
 
     @Test

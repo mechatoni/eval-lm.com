@@ -58,7 +58,7 @@ public class SearchEngineImpl implements SearchEngine {
         String[] csvFields = parseLine(line);
         // May get a NumberFormatException, propagate 'cause out of specs or continue searching?
         // As of right now, will break search
-        return new FlightTicketImpl(csvFields[CSVLINE_FLIGHTNAME_POSITION], csvFields[CSVLINE_BASEPRICE_POSITION]);
+        return new FlightTicket(csvFields[CSVLINE_FLIGHTNAME_POSITION], csvFields[CSVLINE_BASEPRICE_POSITION]);
     }
 
     private String[] parseLine(String line) {

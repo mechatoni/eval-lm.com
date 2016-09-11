@@ -2,14 +2,14 @@ package exercises.flight.search;
 import org.junit.Test;
 
 import exercises.flight.search.impl.*;
-import exercises.flight.serach.util.*;
+import exercises.flight.search.util.*;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
 import java.io.*;
 import java.util.*;
 
-public class PricingEngineTest {
+public class PricingEngineByDaysToDepartureAndNumPersonsTest {
 
     @Test
     public void testCalculateTicketsFirstExample() {
@@ -19,7 +19,7 @@ public class PricingEngineTest {
         //          * TK2372, 157.6 €
         //          * TK2659, 198.4 €
         //          * LH5909, 90.4 €
-        PricingEngine pricing = new RuledPricingEngine();
+        PricingEngine pricing = new PricingEngineByDaysToDepartureAndNumPersons();
         PricingModifiers pricingModifiers = new PricingModifiers();
         // TODO: Find why examples are 30/31 different, or rule is not as examples state.
         pricingModifiers.daysToDeparture = 31;
@@ -40,7 +40,7 @@ public class PricingEngineTest {
         //      flights:
         //        * TK8891, 806 € (2 * (120% of 250) + 67% of (120% of 250) + 5)
         //        * LH1085, 481.19 € (2 * (120% of 148) + 67% of (120% of 148) + 7)
-        PricingEngine pricing = new RuledPricingEngine();
+        PricingEngine pricing = new PricingEngineByDaysToDepartureAndNumPersons();
         PricingModifiers pricingModifiers = new PricingModifiers();
         pricingModifiers.daysToDeparture = 15;
         pricingModifiers.numAdults = 2;
@@ -60,7 +60,7 @@ public class PricingEngineTest {
         //      flights:
         //        * IB2171, 909.09 € (150% of 259 + 2 * 67% of (150% of 259))
         //        * LH5496, 1028.43 € (150% of 293 + 2 * 67% of (150% of 293))
-        PricingEngine pricing = new RuledPricingEngine();
+        PricingEngine pricing = new PricingEngineByDaysToDepartureAndNumPersons();
         PricingModifiers pricingModifiers = new PricingModifiers();
         pricingModifiers.daysToDeparture = 2;
         pricingModifiers.numAdults = 1;
@@ -77,7 +77,7 @@ public class PricingEngineTest {
 
         // * CDG -> FRA
         // no flights available
-        PricingEngine pricing = new RuledPricingEngine();
+        PricingEngine pricing = new PricingEngineByDaysToDepartureAndNumPersons();
         PricingModifiers pricingModifiers = new PricingModifiers();
         List<FlightTicket> testTotalsTickets = pricing.calculateTotals(getBaseFlightTickets("CDG", "FRA"), pricingModifiers);
         assertThat("getFlightTickets must return an empty list", testTotalsTickets.isEmpty(), is(true));
@@ -86,7 +86,7 @@ public class PricingEngineTest {
 
     private List<FlightTicket> getBaseFlightTickets(String origin, String destination) {
         
-        SearchEngine engine = new SearchEngineImpl(getReader());
+        SearchEngine engine = new SearchEngineByOriginAndDestination(getReader());
         List<FlightTicket> matchingFlightTickets = engine.getFlightTickets(new SearchConditions(origin, destination));
         return matchingFlightTickets;
     }

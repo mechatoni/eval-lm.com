@@ -8,7 +8,7 @@ import java.util.stream.*;
 
 import exercises.flight.search.*;
 
-public class SearchEngineImpl implements SearchEngine {
+public class SearchEngineByOriginAndDestination implements SearchEngine {
 
     private static final int CSVLINE_BASEPRICE_POSITION = 3;
     private static final int CSVLINE_FLIGHTNAME_POSITION = 2;
@@ -17,7 +17,7 @@ public class SearchEngineImpl implements SearchEngine {
     private String separatorsSet = DEFAULT_CSV_SEPARATORS_SET;
     private final Reader flightListReader;
 
-    public SearchEngineImpl(Reader flightListReader) {
+    public SearchEngineByOriginAndDestination(Reader flightListReader) {
         this.flightListReader = flightListReader;
     }
 

@@ -9,14 +9,14 @@ import java.util.*;
 import org.junit.*;
 
 import exercises.flight.search.impl.*;
-import exercises.flight.serach.util.*;
+import exercises.flight.search.util.*;
 
-public class SearchEngineTest {
+public class SearchEngineByOriginAndDestinationTest {
 
     @Test
     public void testNonexistentInputFile() {
 
-        SearchEngine engine = new SearchEngineImpl(getEmptyReader());
+        SearchEngine engine = new SearchEngineByOriginAndDestination(getEmptyReader());
         List<FlightTicket> matchingFlightTickets = engine.getFlightTickets(new SearchConditions("", ""));
         assertThat("getFlightTickets must return an empty list", matchingFlightTickets.isEmpty(), is(true));
     }
@@ -24,7 +24,7 @@ public class SearchEngineTest {
     @Test
     public void testSearchAndNotFind() {
 
-        SearchEngine engine = new SearchEngineImpl(getValidReader());
+        SearchEngine engine = new SearchEngineByOriginAndDestination(getValidReader());
         List<FlightTicket> matchingFlightTickets = engine.getFlightTickets(new SearchConditions("", ""));
         assertThat("getFlightTickets must return an empty list", matchingFlightTickets.isEmpty(), is(true));
     }
@@ -32,7 +32,7 @@ public class SearchEngineTest {
     @Test
     public void testSearchAndNotFindWhenEmptyOrigin() {
 
-        SearchEngine engine = new SearchEngineImpl(getValidReader());
+        SearchEngine engine = new SearchEngineByOriginAndDestination(getValidReader());
         List<FlightTicket> matchingFlightTickets = engine.getFlightTickets(new SearchConditions("", "MAD"));
         assertThat("getFlightTickets must return an empty list", matchingFlightTickets.isEmpty(), is(true));
     }
@@ -40,7 +40,7 @@ public class SearchEngineTest {
     @Test
     public void testSearchAndNotFindWhenEmptyDestination() {
 
-        SearchEngine engine = new SearchEngineImpl(getValidReader());
+        SearchEngine engine = new SearchEngineByOriginAndDestination(getValidReader());
         List<FlightTicket> matchingFlightTickets = engine.getFlightTickets(new SearchConditions("CDG", ""));
         assertThat("getFlightTickets must return an empty list", matchingFlightTickets.isEmpty(), is(true));
     }
@@ -48,7 +48,7 @@ public class SearchEngineTest {
     @Test
     public void testSearchAndNotFindWhenOriginNonexistent() {
 
-        SearchEngine engine = new SearchEngineImpl(getValidReader());
+        SearchEngine engine = new SearchEngineByOriginAndDestination(getValidReader());
         List<FlightTicket> matchingFlightTickets = engine.getFlightTickets(new SearchConditions("XXX", "MAD"));
         assertThat("getFlightTickets must return an empty list", matchingFlightTickets.isEmpty(), is(true));
     }
@@ -56,7 +56,7 @@ public class SearchEngineTest {
     @Test
     public void testSearchAndNotFindWhenDestinationNonexistent() {
 
-        SearchEngine engine = new SearchEngineImpl(getValidReader());
+        SearchEngine engine = new SearchEngineByOriginAndDestination(getValidReader());
         List<FlightTicket> matchingFlightTickets = engine.getFlightTickets(new SearchConditions("CDG", "XXX"));
         assertThat("getFlightTickets must return an empty list", matchingFlightTickets.isEmpty(), is(true));
     }
@@ -64,7 +64,7 @@ public class SearchEngineTest {
     @Test
     public void testSearchAndFindOne() {
 
-        SearchEngine engine = new SearchEngineImpl(getValidReader());
+        SearchEngine engine = new SearchEngineByOriginAndDestination(getValidReader());
         List<FlightTicket> matchingFlightTickets = engine.getFlightTickets(new SearchConditions("CDG", "MAD"));
         assertThat("getFlightTickets must return a non empty list", matchingFlightTickets.isEmpty(), is(false));
         assertThat("getFlightTickets must return a list with only one ticket", matchingFlightTickets.size(), is(1));
@@ -74,7 +74,7 @@ public class SearchEngineTest {
     @Test
     public void testSearchAndFindTwo() {
 
-        SearchEngine engine = new SearchEngineImpl(getValidReader());
+        SearchEngine engine = new SearchEngineByOriginAndDestination(getValidReader());
         List<FlightTicket> matchingFlightTickets = engine.getFlightTickets(new SearchConditions("CPH", "FCO"));
         assertThat("getFlightTickets must return a non empty list", matchingFlightTickets.isEmpty(), is(false));
         assertThat("getFlightTickets must return a list with two tickets", matchingFlightTickets.size(), is(2));

@@ -6,7 +6,7 @@ import java.util.stream.*;
 
 import exercises.flight.search.*;
 
-public class RuledPricingEngine implements PricingEngine {
+public class PricingEngineByDaysToDepartureAndNumPersons implements PricingEngine {
 
     private static final BigDecimal MORE_THAN_30_DAYS_FACTOR = new BigDecimal("0.8");
     private static final BigDecimal LESS_THAN_16_AND_MORE_THAN_3_DAYS_FACTOR = new BigDecimal("1.2");
@@ -15,7 +15,7 @@ public class RuledPricingEngine implements PricingEngine {
 
     private Map<String, BigDecimal> airlineInfantPriceByIATA;
 
-    public RuledPricingEngine() {
+    public PricingEngineByDaysToDepartureAndNumPersons() {
 
         airlineInfantPriceByIATA = new HashMap<String, BigDecimal>();
         airlineInfantPriceByIATA.put("IB", new BigDecimal("10"));

@@ -1,4 +1,4 @@
-package exercises.flight.serach.util;
+package exercises.flight.search.util;
 
 import java.io.*;
 import java.nio.charset.*;

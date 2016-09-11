@@ -32,6 +32,7 @@ public class PricingEngineByDaysToDepartureAndNumPersons implements PricingEngin
 
         return base.stream()
                 .map(ticket -> calculateTotal(ticket, pricingModifiers))
+                .filter(ticket -> ticket.price.compareTo(BigDecimal.ZERO) >= 0)
                 .collect(Collectors.toList());
     }
 
@@ -51,8 +52,10 @@ public class PricingEngineByDaysToDepartureAndNumPersons implements PricingEngin
             price = price.multiply(MORE_THAN_30_DAYS_FACTOR);
         } else if (daysToGo <= 15 && daysToGo >= 3) {
             price = price.multiply(LESS_THAN_16_AND_MORE_THAN_3_DAYS_FACTOR);
-        } else if (daysToGo < 3) {
+        } else if (daysToGo < 3 && daysToGo >= 0) {
             price = price.multiply(LESS_THAN_3_DAYS_FACTOR);
+        } else if (daysToGo < 0) {
+            price = BigDecimal.ZERO.subtract(BigDecimal.ONE);
         }
         return price;
     }

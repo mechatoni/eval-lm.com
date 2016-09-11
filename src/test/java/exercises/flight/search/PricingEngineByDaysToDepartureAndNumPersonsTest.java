@@ -9,8 +9,46 @@ import static org.hamcrest.Matchers.*;
 import java.io.*;
 import java.util.*;
 
-public class PricingEngineByDaysToDepartureAndNumPersonsTest {
+public class PricingEngineByDaysToDepartureAndNumPersonsTest  {
 
+    String SAMPLES_CSV_FILEPATH = "src/test/resources";
+    String SAMPLES_CSV_FILENAME = "sample.csv";
+    
+    @Test
+    public void testCalculateTicketsEdgeCaseNoPersons() {
+
+        //        * no persons, 30 days to the departure date, flying AMS -> FRA
+        //        should find flights, but with 0.0 price:
+        //          * TK2372, 0.0 €
+        //          * TK2659, 0.0 €
+        //          * LH5909, 0.0 €
+        PricingModifiers pricingModifiers = new PricingModifiers();
+        pricingModifiers.daysToDeparture = 30;
+        pricingModifiers.numAdults = 0;
+
+        PricingEngine pricingEngine = new PricingEngineByDaysToDepartureAndNumPersons();
+
+        List<FlightTicket> testTotalsTickets = pricingEngine.calculateTotals(getBaseFlightTickets("AMS", "FRA"), pricingModifiers);
+
+        assertThat(testTotalsTickets.size(), is(3));
+        assertThat(testTotalsTickets, hasItem(new FlightTicket("TK2372", "0")));
+        assertThat(testTotalsTickets, hasItem(new FlightTicket("TK2659", "0")));
+        assertThat(testTotalsTickets, hasItem(new FlightTicket("LH5909", "0")));
+    }
+    @Test
+    public void testCalculateTicketsEdgeCaseNegativeDays() {
+        
+        // Cannot get back in time, at any price
+        PricingModifiers pricingModifiers = new PricingModifiers();
+        pricingModifiers.daysToDeparture = -1;
+        pricingModifiers.numAdults = 1;
+        
+        PricingEngine pricingEngine = new PricingEngineByDaysToDepartureAndNumPersons();
+
+        List<FlightTicket> testTotalsTickets = pricingEngine.calculateTotals(getBaseFlightTickets("AMS", "FRA"), pricingModifiers);
+        assertThat(testTotalsTickets.isEmpty(), is(true));
+    }
+    
     @Test
     public void testCalculateTicketsFirstExample() {
 
@@ -19,18 +57,19 @@ public class PricingEngineByDaysToDepartureAndNumPersonsTest {
         //          * TK2372, 157.6 €
         //          * TK2659, 198.4 €
         //          * LH5909, 90.4 €
-        PricingEngine pricing = new PricingEngineByDaysToDepartureAndNumPersons();
         PricingModifiers pricingModifiers = new PricingModifiers();
-        // TODO: Find why examples are 30/31 different, or rule is not as examples state.
+        // pricingModifiers.daysToDeparture = 30;
+        // TODO: Ask why examples are 30/31 divergent with rules. Deal as if rules are right and examples wrong.
         pricingModifiers.daysToDeparture = 31;
         pricingModifiers.numAdults = 1;
 
-        List<FlightTicket> testTotalsTickets = pricing.calculateTotals(getBaseFlightTickets("AMS", "FRA"), pricingModifiers);
-        assertThat("getFlightTickets must return a non empty list", testTotalsTickets.isEmpty(), is(false));
-        assertThat("getFlightTickets must return a list with three tickets", testTotalsTickets.size(), is(3));
-        assertThat("getFlightTickets must return a ticket like 'TK2372,157.60'", testTotalsTickets, hasItem(new FlightTicket("TK2372", "157.60")));
-        assertThat("getFlightTickets must return a ticket like 'TK2659,198.40'", testTotalsTickets, hasItem(new FlightTicket("TK2659", "198.40")));
-        assertThat("getFlightTickets must return a ticket like 'LH5909,90.40'", testTotalsTickets, hasItem(new FlightTicket("LH5909", "90.40")));
+        PricingEngine pricingEngine = new PricingEngineByDaysToDepartureAndNumPersons();
+
+        List<FlightTicket> testTotalsTickets = pricingEngine.calculateTotals(getBaseFlightTickets("AMS", "FRA"), pricingModifiers);
+        assertThat(testTotalsTickets.size(), is(3));
+        assertThat(testTotalsTickets, hasItem(new FlightTicket("TK2372", "157.60")));
+        assertThat(testTotalsTickets, hasItem(new FlightTicket("TK2659", "198.40")));
+        assertThat(testTotalsTickets, hasItem(new FlightTicket("LH5909", "90.40")));
     }
 
     @Test
@@ -40,17 +79,18 @@ public class PricingEngineByDaysToDepartureAndNumPersonsTest {
         //      flights:
         //        * TK8891, 806 € (2 * (120% of 250) + 67% of (120% of 250) + 5)
         //        * LH1085, 481.19 € (2 * (120% of 148) + 67% of (120% of 148) + 7)
-        PricingEngine pricing = new PricingEngineByDaysToDepartureAndNumPersons();
         PricingModifiers pricingModifiers = new PricingModifiers();
         pricingModifiers.daysToDeparture = 15;
         pricingModifiers.numAdults = 2;
         pricingModifiers.numChildren = 1;
         pricingModifiers.numInfants = 1;
-        List<FlightTicket> testTotalsTickets = pricing.calculateTotals(getBaseFlightTickets("LHR", "IST"), pricingModifiers);
-        assertThat("getFlightTickets must return a non empty list", testTotalsTickets.isEmpty(), is(false));
-        assertThat("getFlightTickets must return a list with three tickets", testTotalsTickets.size(), is(2));
-        assertThat("getFlightTickets must return a ticket like 'TK8891,806.00'", testTotalsTickets, hasItem(new FlightTicket("TK8891", "806.00")));
-        assertThat("getFlightTickets must return a ticket like 'LH1085,481.19'", testTotalsTickets, hasItem(new FlightTicket("LH1085", "481.19")));
+        
+        PricingEngine pricingEngine = new PricingEngineByDaysToDepartureAndNumPersons();
+        
+        List<FlightTicket> testTotalsTickets = pricingEngine.calculateTotals(getBaseFlightTickets("LHR", "IST"), pricingModifiers);
+        assertThat(testTotalsTickets.size(), is(2));
+        assertThat(testTotalsTickets, hasItem(new FlightTicket("TK8891", "806.00")));
+        assertThat(testTotalsTickets, hasItem(new FlightTicket("LH1085", "481.19")));
     }
 
     @Test
@@ -60,16 +100,17 @@ public class PricingEngineByDaysToDepartureAndNumPersonsTest {
         //      flights:
         //        * IB2171, 909.09 € (150% of 259 + 2 * 67% of (150% of 259))
         //        * LH5496, 1028.43 € (150% of 293 + 2 * 67% of (150% of 293))
-        PricingEngine pricing = new PricingEngineByDaysToDepartureAndNumPersons();
         PricingModifiers pricingModifiers = new PricingModifiers();
         pricingModifiers.daysToDeparture = 2;
         pricingModifiers.numAdults = 1;
         pricingModifiers.numChildren = 2;
-        List<FlightTicket> testTotalsTickets = pricing.calculateTotals(getBaseFlightTickets("BCN", "MAD"), pricingModifiers);
-        assertThat("getFlightTickets must return a non empty list", testTotalsTickets.isEmpty(), is(false));
-        assertThat("getFlightTickets must return a list with three tickets", testTotalsTickets.size(), is(2));
-        assertThat("getFlightTickets must return a ticket like 'IB2171,909.09'", testTotalsTickets, hasItem(new FlightTicket("IB2171", "909.09")));
-        assertThat("getFlightTickets must return a ticket like 'LH5496,1028.43'", testTotalsTickets, hasItem(new FlightTicket("LH5496", "1028.43")));
+        
+        PricingEngine pricingEngine = new PricingEngineByDaysToDepartureAndNumPersons();
+        
+        List<FlightTicket> testTotalsTickets = pricingEngine.calculateTotals(getBaseFlightTickets("BCN", "MAD"), pricingModifiers);
+        assertThat(testTotalsTickets.size(), is(2));
+        assertThat(testTotalsTickets, hasItem(new FlightTicket("IB2171", "909.09")));
+        assertThat(testTotalsTickets, hasItem(new FlightTicket("LH5496", "1028.43")));
     }
 
     @Test
@@ -77,25 +118,27 @@ public class PricingEngineByDaysToDepartureAndNumPersonsTest {
 
         // * CDG -> FRA
         // no flights available
-        PricingEngine pricing = new PricingEngineByDaysToDepartureAndNumPersons();
         PricingModifiers pricingModifiers = new PricingModifiers();
-        List<FlightTicket> testTotalsTickets = pricing.calculateTotals(getBaseFlightTickets("CDG", "FRA"), pricingModifiers);
-        assertThat("getFlightTickets must return an empty list", testTotalsTickets.isEmpty(), is(true));
-        assertThat("getFlightTickets must return a list with no tickets", testTotalsTickets.size(), is(0));
+
+        PricingEngine pricingEngine = new PricingEngineByDaysToDepartureAndNumPersons();
+        
+        List<FlightTicket> testTotalsTickets = pricingEngine.calculateTotals(getBaseFlightTickets("CDG", "FRA"), pricingModifiers);
+        assertThat(testTotalsTickets.isEmpty(), is(true));
     }
 
     private List<FlightTicket> getBaseFlightTickets(String origin, String destination) {
         
-        SearchEngine engine = new SearchEngineByOriginAndDestination(getReader());
-        List<FlightTicket> matchingFlightTickets = engine.getFlightTickets(new SearchConditions(origin, destination));
+        SearchEngine searchEngine = new SearchEngineByOriginAndDestination(getReader());
+        List<FlightTicket> matchingFlightTickets = searchEngine.getFlightTickets(new SearchConditions(origin, destination));
         return matchingFlightTickets;
     }
 
     private Reader getReader() {
 
         try {
-            return CSVReaderUtil.getFileReader("src/test/resources", "sample.csv");
+            return CSVReaderUtil.getFileReader(SAMPLES_CSV_FILEPATH, SAMPLES_CSV_FILENAME);
         } catch (IOException ex) {
+            // For tests an empty reader will do. Production ready code should deal with exceptions
             return new StringReader("");
         }
     }

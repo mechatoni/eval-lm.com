@@ -1,19 +1,21 @@
 package exercises.flight.search.impl;
 
+import java.math.*;
+
 import exercises.flight.search.*;
 
 public class FlightTicketImpl implements FlightTicket {
 
     String flightName;
-    Float price;
+    BigDecimal price;
 
-    public FlightTicketImpl(String flightName, Float price) {
+    public FlightTicketImpl(String flightName, BigDecimal price) {
         this.flightName = flightName;
-        this.price = price;
+        this.price = price.setScale(2, RoundingMode.HALF_UP);
     }
 
     public FlightTicketImpl(String flightName, String price) throws NumberFormatException {
-        this(flightName, Float.parseFloat(price));
+        this(flightName, new BigDecimal(price));
     }
 
     @Override
@@ -23,7 +25,7 @@ public class FlightTicketImpl implements FlightTicket {
     }
 
     @Override
-    public Float getPrice() {
+    public BigDecimal getPrice() {
 
         return price;
     }

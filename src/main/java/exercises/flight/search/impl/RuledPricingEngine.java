@@ -1,5 +1,6 @@
 package exercises.flight.search.impl;
 
+import java.math.*;
 import java.util.*;
 import java.util.stream.*;
 
@@ -7,33 +8,23 @@ import exercises.flight.search.*;
 
 public class RuledPricingEngine implements PricingEngine {
 
-    private static final Float MORE_THAN_30_DAYS_FACTOR = new Float("0.8");
-    private static final Float LESS_THAN_16_AND_MORE_THAN_3_DAYS_FACTOR = new Float("1.2");
-    private static final Float LESS_THAN_3_DAYS_FACTOR = new Float("1.5");
-    private static final Float CHILD_FACTOR = new Float("0.67");
+    private static final BigDecimal MORE_THAN_30_DAYS_FACTOR = new BigDecimal("0.8");
+    private static final BigDecimal LESS_THAN_16_AND_MORE_THAN_3_DAYS_FACTOR = new BigDecimal("1.2");
+    private static final BigDecimal LESS_THAN_3_DAYS_FACTOR = new BigDecimal("1.5");
+    private static final BigDecimal CHILD_FACTOR = new BigDecimal("0.67");
 
-    private Map<String, Float> airlineInfantPriceByIATA;
+    private Map<String, BigDecimal> airlineInfantPriceByIATA;
 
     public RuledPricingEngine() {
 
-        airlineInfantPriceByIATA = new HashMap<String, Float>();
-        airlineInfantPriceByIATA.put("IB", new Float("10"));
-        airlineInfantPriceByIATA.put("BA", new Float("15"));
-        airlineInfantPriceByIATA.put("LH", new Float("7"));
-        airlineInfantPriceByIATA.put("FR", new Float("20"));
-        airlineInfantPriceByIATA.put("VY", new Float("10"));
-        airlineInfantPriceByIATA.put("TK", new Float("5"));
-        airlineInfantPriceByIATA.put("U2", new Float("19.90"));
-    }
-
-    @Override
-    public FlightTicket calculateTotal(FlightTicket base, PricingModifiers pricingModifiers) {
-
-        Float unitPrice = calculatePriceFromDaysRules(pricingModifiers, base.getPrice());
-        Float adultsPrice = unitPrice * pricingModifiers.numAdults;
-        Float childrenPrice = unitPrice * pricingModifiers.numChildren * CHILD_FACTOR;
-        Float infantsPrice = getInfantPrice(base.getFlightName()) * pricingModifiers.numInfants;
-        return new FlightTicketImpl(base.getFlightName(), adultsPrice + childrenPrice + infantsPrice);
+        airlineInfantPriceByIATA = new HashMap<String, BigDecimal>();
+        airlineInfantPriceByIATA.put("IB", new BigDecimal("10"));
+        airlineInfantPriceByIATA.put("BA", new BigDecimal("15"));
+        airlineInfantPriceByIATA.put("LH", new BigDecimal("7"));
+        airlineInfantPriceByIATA.put("FR", new BigDecimal("20"));
+        airlineInfantPriceByIATA.put("VY", new BigDecimal("10"));
+        airlineInfantPriceByIATA.put("TK", new BigDecimal("5"));
+        airlineInfantPriceByIATA.put("U2", new BigDecimal("19.90"));
     }
 
     @Override
@@ -44,24 +35,46 @@ public class RuledPricingEngine implements PricingEngine {
                 .collect(Collectors.toList());
     }
 
-    private Float getInfantPrice(String flightName) {
+    @Override
+    public FlightTicket calculateTotal(FlightTicket base, PricingModifiers pricingModifiers) {
 
-        Float result = airlineInfantPriceByIATA.get(flightName.substring(0, 2));
-        if (result == null) {
-            return 0f;
-        }
-        return result;
+        BigDecimal unitPrice = calculatePriceFromDaysRules(pricingModifiers, base.getPrice());
+        BigDecimal adultsPrice = calculateAdultsPrice(pricingModifiers, unitPrice);
+        BigDecimal childrenPrice = calculateChildrenPrice(pricingModifiers, unitPrice);
+        BigDecimal infantsPrice = calculateInfantsPrice(base, pricingModifiers);
+        return new FlightTicketImpl(base.getFlightName(), adultsPrice.add(childrenPrice).add(infantsPrice));
     }
 
-    private Float calculatePriceFromDaysRules(PricingModifiers pricingModifiers, Float price) {
+    private BigDecimal calculatePriceFromDaysRules(PricingModifiers pricingModifiers, BigDecimal price) {
         int daysToGo = pricingModifiers.daysToDeparture;
         if (daysToGo > 30) {
-            price = price * MORE_THAN_30_DAYS_FACTOR;
+            price = price.multiply(MORE_THAN_30_DAYS_FACTOR);
         } else if (daysToGo <= 15 && daysToGo >= 3) {
-            price = price * LESS_THAN_16_AND_MORE_THAN_3_DAYS_FACTOR;
+            price = price.multiply(LESS_THAN_16_AND_MORE_THAN_3_DAYS_FACTOR);
         } else if (daysToGo < 3) {
-            price = price * LESS_THAN_3_DAYS_FACTOR;
+            price = price.multiply(LESS_THAN_3_DAYS_FACTOR);
         }
         return price;
+    }
+
+    private BigDecimal calculateAdultsPrice(PricingModifiers pricingModifiers, BigDecimal unitPrice) {
+        return unitPrice.multiply(new BigDecimal(pricingModifiers.numAdults));
+    }
+
+    private BigDecimal calculateChildrenPrice(PricingModifiers pricingModifiers, BigDecimal unitPrice) {
+        return unitPrice.multiply(new BigDecimal(pricingModifiers.numChildren)).multiply(CHILD_FACTOR);
+    }
+
+    private BigDecimal calculateInfantsPrice(FlightTicket base, PricingModifiers pricingModifiers) {
+        return getInfantPrice(base.getFlightName()).multiply(new BigDecimal(pricingModifiers.numInfants));
+    }
+
+    private BigDecimal getInfantPrice(String flightName) {
+
+        BigDecimal result = airlineInfantPriceByIATA.get(flightName.substring(0, 2));
+        if (result == null) {
+            return BigDecimal.ZERO;
+        }
+        return result;
     }
 }

@@ -1,8 +1,10 @@
 package exercises.flight.search;
 
+import java.math.*;
+
 public interface FlightTicket {
 
     String getFlightName();
 
-    Float getPrice();
+    BigDecimal getPrice();
 }

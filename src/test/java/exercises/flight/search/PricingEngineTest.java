@@ -14,6 +14,11 @@ public class PricingEngineTest {
     @Test
     public void testCalculateTicketsFirstExample() {
 
+        //        * 1 adult, 30 days to the departure date, flying AMS -> FRA
+        //        flights:
+        //          * TK2372, 157.6 €
+        //          * TK2659, 198.4 €
+        //          * LH5909, 90.4 €
         PricingEngine pricing = new RuledPricingEngine();
         PricingModifiers pricingModifiers = new PricingModifiers();
         // TODO: Find why examples are 30/31 different, or rule is not as examples state.
@@ -31,6 +36,10 @@ public class PricingEngineTest {
     @Test
     public void testCalculateTicketsSecondExample() {
 
+        //      * 2 adults, 1 child, 1 infant, 15 days to the departure date, flying LHR -> IST
+        //      flights:
+        //        * TK8891, 806 € (2 * (120% of 250) + 67% of (120% of 250) + 5)
+        //        * LH1085, 481.19 € (2 * (120% of 148) + 67% of (120% of 148) + 7)
         PricingEngine pricing = new RuledPricingEngine();
         PricingModifiers pricingModifiers = new PricingModifiers();
         pricingModifiers.daysToDeparture = 15;
@@ -47,10 +56,10 @@ public class PricingEngineTest {
     @Test
     public void testCalculateTicketsThirdExample() {
 
-        // * 1 adult, 2 children, 2 days to the departure date, flying BCN -> MAD
-        // flights:
-        // * IB2171, 909.09 € (150% of 259 + 2 * 67% of (150% of 259))
-        // * LH5496, 1028.43 € (150% of 293 + 2 * 67% of (150% of 293))
+        //      * 1 adult, 2 children, 2 days to the departure date, flying BCN -> MAD
+        //      flights:
+        //        * IB2171, 909.09 € (150% of 259 + 2 * 67% of (150% of 259))
+        //        * LH5496, 1028.43 € (150% of 293 + 2 * 67% of (150% of 293))
         PricingEngine pricing = new RuledPricingEngine();
         PricingModifiers pricingModifiers = new PricingModifiers();
         pricingModifiers.daysToDeparture = 2;
@@ -71,8 +80,8 @@ public class PricingEngineTest {
         PricingEngine pricing = new RuledPricingEngine();
         PricingModifiers pricingModifiers = new PricingModifiers();
         List<FlightTicket> testTotalsTickets = pricing.calculateTotals(getBaseFlightTickets("CDG", "FRA"), pricingModifiers);
-        assertThat("getFlightTickets must return a non empty list", testTotalsTickets.isEmpty(), is(true));
-        assertThat("getFlightTickets must return a list with three tickets", testTotalsTickets.size(), is(0));
+        assertThat("getFlightTickets must return an empty list", testTotalsTickets.isEmpty(), is(true));
+        assertThat("getFlightTickets must return a list with no tickets", testTotalsTickets.size(), is(0));
     }
 
     private List<FlightTicket> getBaseFlightTickets(String origin, String destination) {

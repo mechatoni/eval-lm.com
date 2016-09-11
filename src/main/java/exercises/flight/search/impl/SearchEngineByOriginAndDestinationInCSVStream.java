@@ -8,23 +8,26 @@ import java.util.stream.*;
 
 import exercises.flight.search.*;
 
-public class SearchEngineByOriginAndDestination implements SearchEngine {
+public class SearchEngineByOriginAndDestinationInCSVStream implements SearchEngine {
 
     private static final int CSVLINE_BASEPRICE_POSITION = 3;
     private static final int CSVLINE_FLIGHTNAME_POSITION = 2;
     private static final String REGEX_ANYCHARSEQUENCE = ".*";
     private static final String DEFAULT_CSV_SEPARATORS_SET = "[,;]";
+
+    // Modifiable, configurable separatorSet will be used.
     private String separatorsSet = DEFAULT_CSV_SEPARATORS_SET;
+    
     private final Reader flightListReader;
 
-    public SearchEngineByOriginAndDestination(Reader flightListReader) {
+    public SearchEngineByOriginAndDestinationInCSVStream(Reader flightListReader) {
         this.flightListReader = flightListReader;
     }
 
     @Override
     public List<FlightTicket> getFlightTickets(SearchConditions searchConditions) {
 
-        Predicate<? super String> originDestinationFilter = createCSVFilter(searchConditions);
+        Predicate<? super String> originDestinationFilter = createOriginDestinationCSVSearchFilter(searchConditions);
         try (BufferedReader reader = new BufferedReader(flightListReader)) {
 
             return reader.lines()
@@ -36,13 +39,13 @@ public class SearchEngineByOriginAndDestination implements SearchEngine {
         }
     }
 
-    private Predicate<? super String> createCSVFilter(SearchConditions searchConditions) {
+    private Predicate<? super String> createOriginDestinationCSVSearchFilter(SearchConditions searchConditions) {
 
-        String regex = getCSVPattern(searchConditions);
+        String regex = getOriginDestinationCSVSearchPattern(searchConditions);
         return line -> line.matches(regex);
     }
 
-    private String getCSVPattern(SearchConditions searchConditions) {
+    private String getOriginDestinationCSVSearchPattern(SearchConditions searchConditions) {
 
         StringBuilder joiner = new StringBuilder()
                 .append(Pattern.quote(searchConditions.origin))
@@ -64,5 +67,4 @@ public class SearchEngineByOriginAndDestination implements SearchEngine {
     private String[] parseLine(String line) {
         return line.split(separatorsSet);
     }
-
 }

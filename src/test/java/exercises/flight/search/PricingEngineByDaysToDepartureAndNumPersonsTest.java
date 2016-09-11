@@ -128,7 +128,7 @@ public class PricingEngineByDaysToDepartureAndNumPersonsTest  {
 
     private List<FlightTicket> getBaseFlightTickets(String origin, String destination) {
         
-        SearchEngine searchEngine = new SearchEngineByOriginAndDestination(getReader());
+        SearchEngine searchEngine = new SearchEngineByOriginAndDestinationInCSVStream(getReader());
         List<FlightTicket> matchingFlightTickets = searchEngine.getFlightTickets(new SearchConditions(origin, destination));
         return matchingFlightTickets;
     }

@@ -8,10 +8,10 @@ import exercises.flight.search.*;
 
 public class PricingEngineByDaysToDepartureAndNumPersons implements PricingEngine {
 
-    private static final BigDecimal MORE_THAN_30_DAYS_FACTOR = new BigDecimal("0.8");
-    private static final BigDecimal LESS_THAN_16_AND_MORE_THAN_3_DAYS_FACTOR = new BigDecimal("1.2");
-    private static final BigDecimal LESS_THAN_3_DAYS_FACTOR = new BigDecimal("1.5");
-    private static final BigDecimal CHILD_FACTOR = new BigDecimal("0.67");
+    private static final BigDecimal MULTIPLICAND_FOR_MORE_THAN_30_DAYS = new BigDecimal("0.8");
+    private static final BigDecimal MULTIPLICAND_FOR_LESS_THAN_16_AND_MORE_THAN_3_DAYS = new BigDecimal("1.2");
+    private static final BigDecimal MULTIPLICAND_FOR_LESS_THAN_3_DAYS = new BigDecimal("1.5");
+    private static final BigDecimal MULTIPLICAND_FOR_CHILD_DISCOUNT = new BigDecimal("0.67");
 
     private Map<String, BigDecimal> airlineInfantPriceByIATA;
 
@@ -28,11 +28,11 @@ public class PricingEngineByDaysToDepartureAndNumPersons implements PricingEngin
     }
 
     @Override
-    public List<FlightTicket> calculateTotals(List<FlightTicket> base, PricingModifiers pricingModifiers) {
+    public List<FlightTicket> calculateTotals(List<FlightTicket> flightTickets, PricingModifiers pricingModifiers) {
 
-        return base.stream()
-                .map(ticket -> calculateTotal(ticket, pricingModifiers))
-                .filter(ticket -> ticket.price.compareTo(BigDecimal.ZERO) >= 0)
+        return flightTickets.stream()
+                .map(currentFlightTicket -> calculateTotal(currentFlightTicket, pricingModifiers))
+                .filter(currentFlightTicket -> currentFlightTicket.price.compareTo(BigDecimal.ZERO) >= 0)
                 .collect(Collectors.toList());
     }
 
@@ -43,18 +43,21 @@ public class PricingEngineByDaysToDepartureAndNumPersons implements PricingEngin
         BigDecimal adultsPrice = calculateAdultsPrice(pricingModifiers, unitPrice);
         BigDecimal childrenPrice = calculateChildrenPrice(pricingModifiers, unitPrice);
         BigDecimal infantsPrice = calculateInfantsPrice(base, pricingModifiers);
+        // Overwriting input parameter can be tempting but always inadequate ;)
         return new FlightTicket(base.flightName, adultsPrice.add(childrenPrice).add(infantsPrice));
     }
 
     private BigDecimal calculatePriceFromDaysRules(PricingModifiers pricingModifiers, BigDecimal price) {
+
         int daysToGo = pricingModifiers.daysToDeparture;
         if (daysToGo > 30) {
-            price = price.multiply(MORE_THAN_30_DAYS_FACTOR);
+            price = price.multiply(MULTIPLICAND_FOR_MORE_THAN_30_DAYS);
         } else if (daysToGo <= 15 && daysToGo >= 3) {
-            price = price.multiply(LESS_THAN_16_AND_MORE_THAN_3_DAYS_FACTOR);
+            price = price.multiply(MULTIPLICAND_FOR_LESS_THAN_16_AND_MORE_THAN_3_DAYS);
         } else if (daysToGo < 3 && daysToGo >= 0) {
-            price = price.multiply(LESS_THAN_3_DAYS_FACTOR);
+            price = price.multiply(MULTIPLICAND_FOR_LESS_THAN_3_DAYS);
         } else if (daysToGo < 0) {
+            // Set a negative value to back-in-time prices, to use when filtering
             price = BigDecimal.ZERO.subtract(BigDecimal.ONE);
         }
         return price;
@@ -65,7 +68,7 @@ public class PricingEngineByDaysToDepartureAndNumPersons implements PricingEngin
     }
 
     private BigDecimal calculateChildrenPrice(PricingModifiers pricingModifiers, BigDecimal unitPrice) {
-        return unitPrice.multiply(new BigDecimal(pricingModifiers.numChildren)).multiply(CHILD_FACTOR);
+        return unitPrice.multiply(new BigDecimal(pricingModifiers.numChildren)).multiply(MULTIPLICAND_FOR_CHILD_DISCOUNT);
     }
 
     private BigDecimal calculateInfantsPrice(FlightTicket base, PricingModifiers pricingModifiers) {

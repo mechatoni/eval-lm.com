@@ -1,13 +1,15 @@
 package exercises.flight.search;
-import org.junit.Test;
+
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
+import java.io.*;
+import java.util.*;
+
+import org.junit.*;
 
 import exercises.flight.search.impl.*;
 import exercises.flight.search.util.*;
-
-import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
-import java.io.*;
-import java.util.*;
 
 public class PricingEngineByDaysToDepartureAndNumPersonsTest  {
 
